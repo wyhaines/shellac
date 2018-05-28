@@ -1,5 +1,4 @@
-require "shellac/version"
+require 'shellac/core'
 
 module Shellac
-  # Your code goes here...
 end
