@@ -84,7 +84,7 @@ module Shellac
   host names or IPs, comma seperated, to match requests from, a regular
   expression to match against, and a target to proxy to:
 
-  -r 'foo.bar.com::?(\w+)::https://github.com/#{$1}'
+  -r 'foo.bar.com::\?(\w+)$::https://github.com/\#{$1}'
 
   This can be specified multiple times. For complex route specs, it is better
   to use a configuration file.
@@ -200,6 +200,15 @@ EHELP
         leftover_argv << ARGV.shift
         leftover_argv << ARGV.shift if ARGV.any? && ( ARGV.first[0..0] != '-' )
         retry
+      ensure
+        puts "adding default storage engine"
+        unless @configuration[:storageengine]
+          @configuration[:storageengine] = 'hash'
+          call_list << Task.new(100) do
+            libname = "shellac/storage_engine/#{@configuration[:storageengine]}"
+            setup_engine(:storageengine, libname)
+          end
+        end
       end
 
       ARGV.replace( leftover_argv ) if leftover_argv.any?
@@ -216,7 +225,7 @@ EHELP
       require libname
       klass = classname( libname.split(/\//).collect {|s| s.capitalize} )
       @configuration[key] = klass.new
-      @configuration[key].class.parse_command_line(@configuration, @meta_configuration) if @configuration[key].respond_to? :parse_command_line
+      @configuration[key].class.parse_command_line(@configuration, @meta_configuration) if @configuration[key].class.respond_to? :parse_command_line
     end
 
   end

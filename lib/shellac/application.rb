@@ -63,17 +63,13 @@ module Shellac
           end
           # Make this sexy and make it so that the exact caching key can be
           # specified instead of just crude path based caching.
-          Shellac::Config[:storageengine]["response:#{original_url}"] = [
-            fetched_response.status.code,
-            fetched_response.headers.to_h,
-            body
-          ]
 
           response = [
             fetched_response.status.code,
             fetched_response.headers.to_h,
             body
           ]
+          Shellac::Config[:storageengine]["response:#{original_url}"] = response
           break
         end
       end
