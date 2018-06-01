@@ -5,6 +5,7 @@ module Shellac
         puma_config = Puma::Configuration.new do |pconf|
           pconf.threads Config[:minimum_threads], Config[:maximum_threads]
           pconf.workers Config[:worker_count]
+          Config[:bind].each {|b| pconf.bind b}
           pconf.app Application
         end
 

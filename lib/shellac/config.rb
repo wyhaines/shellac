@@ -183,11 +183,17 @@ EHELP
           end
         end
 
-        opts.on( '-b', '--bind HOST') do |host_and_port|
+       opts.on( '-b', '--bind HOST') do |host_and_port|
+          if host_and_port =~ /^(\w+:\/\/)/ 
+            protocol = $1
+            host_and_port.gsub!(/^\w+:\/\//,'')
+          else
+            protocol = 'tcp://'
+          end
           h,p = host_and_port.split(/:/,2)
           h = '127.0.0.1' if h.empty?
           p = '80' if p.empty?
-          call_list << Task.new(9000) { @configuration[:bind] << "#{h}:#{p}" }
+          call_list << Task.new(9000) { @configuration[:bind] << "#{protocol}#{h}:#{p}" }
         end
       end
 
