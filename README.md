@@ -6,7 +6,7 @@ it supports pluggable backend storage modules.
 
 ## Installation
 
-    $ gem install shellac
+    $ gem install shellacrb
 
 ## Usage
 
